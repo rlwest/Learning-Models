@@ -7,8 +7,11 @@
 # productions fire if they match the focus buffer
 # each production changes the contents of focus buffer so a different production will fire on the next cycle
 
+import sys
+sys.path.append('/Users/robertwest/ccmsuite')
 
-import ccm      
+import ccm
+
 log=ccm.log()   
 
 from ccm.lib.actr import *  
