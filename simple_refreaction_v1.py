@@ -1,5 +1,8 @@
 #################### ham cheese forgetting DM model ###################
- 
+
+import sys
+sys.path.append('/Users/robertwest/CCMSuite')
+
 import ccm      
 log=ccm.log()  
 from ccm.lib.actr import *
