@@ -28,10 +28,11 @@ class MyAgent(ACTR):
     #DM.request('isa:order type:ham_cheese',require_new=True) # turn down threshold
                                                     # maximum time - how long it will wait for a memory retrieval
 
-
+    Imagebuffer=Buffer
     Visionbuffer=Buffer()
-    DMbuffer=Buffer()                   
-    DM=Memory(DMbuffer,latency=0.05,threshold=1)     # latency controls the relationship between activation and recall
+    DMbuffer=Buffer()
+    DM=Memory(DMbuffer,latency=0.05,threshold=-25,maximum_time=20,finst_size=10,finst_time=1000)
+    #DM=Memory(DMbuffer,latency=0.05,threshold=1)     # latency controls the relationship between activation and recall
                                                      # activation must be above threshold - can be set to none
             
     dm_n=DMNoise(DM,noise=0.0,baseNoise=0.0)         # turn on for DM subsymbolic processing
@@ -46,21 +47,45 @@ class MyAgent(ACTR):
     def init():
         DM.add('objectx:apple container:bowl')
         DM.add('objectx:apple container:bucket')
+        DM.add('objectx:apple container:bin')
         DM.add('objectx:pear container:bowl')
         focus.set('status:start')
         Visionbuffer.set('objectx:apple location:house')
 
     def start(focus='status:start', Visionbuffer='objectx:?objectx'):
         print "recalling based on objects"
-        DM.request('objectx:?objectx container:?')
+        DM.request('objectx:?objectx container:?',require_new=True)
         focus.set('status:get_container') 
 
     def container(focus='status:get_container', DMbuffer='objectx:?objectx container:?container'):  
         print objectx
         print "is in ......."         
-        print container             
+        print container
+        DM.request('objectx:?objectx container:?',require_new=True)
+        Imagebuffer.set('first:?container')
+        focus.set('status:get_container')
+        DMbuffer.clear
+
+    def containerstop(focus='status:get_container', DM='error:True'):  
+        print "I recall they wanted......."
+        print "I forgot"
         focus.set('stop')
+
+
+
+
+
+
+
+
+
         
+    def get_container(focus='status:get_next', Visionbuffer='objectx:?objectx'):
+        print "recalling based on objects"
+        #DM.request('objectx:?objectx container:?',require_new=True)
+        focus.set('status:get_container') 
+
+
     def bread_bottom(focus='sandwich bread'):   
         print "I have a piece of bread"
         focus.set('sandwich cheese')    
