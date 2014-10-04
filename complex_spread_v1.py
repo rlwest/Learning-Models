@@ -3,7 +3,8 @@
 # this model turns on the subsymbolic processing for DM, which causes forgetting
 
 import sys
-sys.path.append('/Users/robertwest/CCMSuite')
+#sys.path.append('/Users/robertwest/CCMSuite')
+#sys.path.append('C:\Users\rlwes_000\Documents\GitHub\ccmsuite')
 
 import ccm      
 log=ccm.log()   
@@ -31,7 +32,7 @@ class MyAgent(ACTR):
     Imagebuffer=Buffer
     Visionbuffer=Buffer()
     DMbuffer=Buffer()
-    DM=Memory(DMbuffer,latency=0.05,threshold=-25,maximum_time=20,finst_size=10,finst_time=1000)
+    DM=Memory(DMbuffer,latency=0.05,threshold=-25,maximum_time=2,finst_size=10,finst_time=1000)
     #DM=Memory(DMbuffer,latency=0.05,threshold=1)     # latency controls the relationship between activation and recall
                                                      # activation must be above threshold - can be set to none
             
@@ -51,22 +52,25 @@ class MyAgent(ACTR):
         DM.add('objectx:pear container:bowl')
         focus.set('status:start')
         Visionbuffer.set('objectx:apple location:house')
+        Imagebuffer.set('first:first second:second third:third')
+
 
     def start(focus='status:start', Visionbuffer='objectx:?objectx'):
         print "recalling based on objects"
         DM.request('objectx:?objectx container:?',require_new=True)
-        focus.set('status:get_container') 
+        focus.set('status:get_container object:first') 
 
-    def container(focus='status:get_container', DMbuffer='objectx:?objectx container:?container'):  
+    def container(focus='status:get_container object:?order', DMbuffer='objectx:?objectx container:?container'):  
         print objectx
         print "is in ......."         
         print container
+        DM.add('type:objectx name:?objectx)
         DM.request('objectx:?objectx container:?',require_new=True)
-        Imagebuffer.set('first:?container')
+        #Imagebuffer.modify('first:?container')
         focus.set('status:get_container')
-        DMbuffer.clear
+        DMbuffer.set('') # set the buffer to empty
 
-    def containerstop(focus='status:get_container', DM='error:True'):  
+    def containerstop(focus='status:get_container', DMbuffer=None, DM='error:True'):# either of these works 
         print "I recall they wanted......."
         print "I forgot"
         focus.set('stop')
