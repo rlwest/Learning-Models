@@ -32,7 +32,7 @@ class MyAgent(ACTR):
     Imagebuffer=Buffer
     Visionbuffer=Buffer()
     DMbuffer=Buffer()
-    DM=Memory(DMbuffer,latency=0.05,threshold=-25,maximum_time=2,finst_size=10,finst_time=1000)
+    DM=Memory(DMbuffer,latency=0.05,threshold=-25,maximum_time=200,finst_size=10,finst_time=1000)
     #DM=Memory(DMbuffer,latency=0.05,threshold=1)     # latency controls the relationship between activation and recall
                                                      # activation must be above threshold - can be set to none
             
@@ -49,26 +49,46 @@ class MyAgent(ACTR):
         DM.add('objectx:apple container:bowl')
         DM.add('objectx:apple container:bucket')
         DM.add('objectx:apple container:bin')
-        DM.add('objectx:pear container:bowl')
+        DM.add('container:bowl location:house')
+        DM.add('container:bucket location:house')
+        DM.add('container:bin location:house')
+    
+        
         focus.set('status:start')
         Visionbuffer.set('objectx:apple location:house')
-        Imagebuffer.set('first:first second:second third:third')
-
+        #Imagebuffer.set('first:first second:second third:third')
 
     def start(focus='status:start', Visionbuffer='objectx:?objectx'):
         print "recalling based on objects"
-        DM.request('objectx:?objectx container:?',require_new=True)
-        focus.set('status:get_container object:first') 
+        DM.request('objectx:?objectx container:?')
+        focus.set('status:get_container') 
 
-    def container(focus='status:get_container object:?order', DMbuffer='objectx:?objectx container:?container'):  
+
+# recall a container for the target object
+    def container(focus='status:get_container', DMbuffer='objectx:?objectx container:?container'):  
         print objectx
         print "is in ......."         
         print container
         DM.add('type:objectx name:?objectx')
-        DM.request('objectx:?objectx container:?',require_new=True)
+        DM.request('container:?container location:?')
         #Imagebuffer.modify('first:?container')
-        focus.set('status:get_container')
+        focus.set('status:get_location')
         DMbuffer.set('') # set the buffer to empty
+
+#recall a location for the container the object is in
+    def location(focus='status:get_location', DMbuffer='container:?container location:?location'):  
+        print container
+        print "is in ......."         
+        print location
+        focus.set('status:check_location')
+
+    def check_location(focus='status:check_location', DMbuffer='container:?container location:?location', Visionbuffer='location:?location'):  
+        print 'YES'
+        focus.set('status:stop')
+
+
+
+
 
     def containerstop(focus='status:get_container', DMbuffer=None, DM='error:True'):# either of these works 
         print "I recall they wanted......."

@@ -50,10 +50,14 @@ class MyAgent(ACTR):
         DM.add('objectx:apple container:bucket')
         DM.add('objectx:apple container:bin')
         DM.add('objectx:pear container:bowl')
+        DM.add('container:bowl location:house')
+        DM.add('container:bucket location:park')
+        DM.add('container:bin location:store')
+        DM.add('container:bin location:park')
+        
         focus.set('status:start')
         Visionbuffer.set('objectx:apple location:house')
-        Imagebuffer.set('first:first second:second third:third')
-
+        #Imagebuffer.set('first:first second:second third:third')
 
     def start(focus='status:start', Visionbuffer='objectx:?objectx'):
         print "recalling based on objects"
@@ -69,6 +73,22 @@ class MyAgent(ACTR):
         #Imagebuffer.modify('first:?container')
         focus.set('status:get_container')
         DMbuffer.set('') # set the buffer to empty
+
+
+
+
+    def get_location(focus='status:get_location', DMbuffer='objectx:?objectx location:?location'):  
+        print objectx
+        print "is in ......."         
+        print location
+        #DM.add('type:objectx name:?objectx)
+        #DM.request('objectx:?objectx container:?',require_new=True)
+        DM.request('objectx:?objectx location:?',require_new=True)
+        #Imagebuffer.modify('first:?container')
+        focus.set('status:get_container')
+        DMbuffer.set('') # set the buffer to empty
+
+
 
     def containerstop(focus='status:get_container', DMbuffer=None, DM='error:True'):# either of these works 
         print "I recall they wanted......."
