@@ -1,7 +1,7 @@
 
 
 import sys
-#sys.path.append('/Users/robertwest/CCMSuite')
+sys.path.append('/Users/robertwest/CCMSuite')
 #sys.path.append('C:\Users\rlwes_000\Documents\GitHub\ccmsuite')
 
 import ccm      
